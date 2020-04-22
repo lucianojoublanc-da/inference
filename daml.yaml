@@ -1,0 +1,11 @@
+sdk-version: 1.0.0
+name: inference
+source: daml
+parties:
+  - Alice
+version: 0.0.1
+dependencies:
+  - daml-prim
+  - daml-stdlib
+sandbox-options:
+  - --wall-clock-time

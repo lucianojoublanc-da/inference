@@ -1,0 +1,45 @@
+-- Copyright (c) 2020 Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
+-- SPDX-License-Identifier: Apache-2.0
+
+module Main where
+
+-- Typeclass
+class Functor f => Recursive b f | b -> f b where
+  project : b -> f b
+
+-- Simple type
+data Obligation = Zero | Give Obligation
+
+data ObligationF a = ZeroF | GiveF a
+  deriving (Show, Eq, Functor)
+
+instance Recursive Obligation ObligationF where
+  project Zero = ZeroF
+  project (Give a) = GiveF a
+
+
+-- Kind with a single argument
+data Obs x = Const x
+
+data ObsF x a = ConstF x
+  deriving (Show, Eq, Functor)
+
+instance Recursive (Obs x) (ObsF x) where
+  project (Const x) = ConstF x
+
+
+-- Tests
+setup = scenario do
+  -- This works fine
+  let y : ObligationF Obligation
+      y = project $ Give Zero
+  -- This doesn't
+  -- let y' : ObligationF [Decimal]
+  --     y' = project $ Give Zero
+  -- This doesn't
+  -- let x : ObsF Decimal (Obs Decimal)
+  --     x = project $ Const 1.0
+  -- This doesn't
+  -- let x' : ObsF Decimal [Decimal]
+  --     x' = project $ Const 1.0
+  return ()
